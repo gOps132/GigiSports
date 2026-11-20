@@ -1,0 +1,7 @@
+.env
+codex-session-*.md
+__pycache__/
+.forecast-cache/
+reports/
+/src-tauri/target/
+/src-tauri/gen/
