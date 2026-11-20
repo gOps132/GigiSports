@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>GigiSports | Forecast Desk</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap bar">
+      <div class="brand"><span class="brand-mark"><img src="assets/chart-no-axes-combined.svg" alt=""></span>GigiSports<span class="divider"></span><span class="product">Forecast Desk</span></div>
+      <div class="top-actions"><span id="top-status" class="chip"><i></i> Checking bot</span><button id="refresh" class="refresh" type="button" aria-label="Refresh dashboard"><img src="assets/refresh-cw.svg" alt=""> <span>Refresh</span></button></div>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="title">
+      <p class="eyebrow"><img src="assets/radio.svg" alt=""> FORECASTERS CHALLENGE</p>
+      <h1 id="title">Forecast dashboard<span>.</span></h1>
+      <p class="subtitle">Explore archived NBA forecasts and see what the bot is doing before tipoff.</p>
+    </section>
+    <p class="notice" id="notice" role="status" hidden></p>
+    <section class="stats" aria-label="Slate summary">
+      <article class="stat"><img src="assets/calendar-days.svg" alt=""><div><span>Games on slate</span><strong id="game-count">&mdash;</strong></div></article>
+      <article class="stat"><img src="assets/chart-no-axes-combined.svg" alt=""><div><span>Priced markets</span><strong id="market-count">&mdash;</strong></div></article>
+      <article class="stat"><img src="assets/clock-3.svg" alt=""><div><span>Latest forecast</span><strong id="latest" class="compact">&mdash;</strong></div></article>
+    </section>
+    <div class="layout">
+      <section class="slate" aria-labelledby="slate-title">
+        <div class="section-head">
+          <div><p class="eyebrow">PREDICTIONS</p><h2 id="slate-title">Game slate</h2></div>
+          <div class="date-nav" id="date-nav" hidden>
+            <button id="prev" type="button" title="Earlier slate" aria-label="Earlier slate"><img src="assets/chevron-left.svg" alt=""></button>
+            <strong id="slate-date"></strong>
+            <button id="next" type="button" title="Later slate" aria-label="Later slate"><img src="assets/chevron-right.svg" alt=""></button>
+          </div>
+        </div>
+        <p class="slate-hint">Probabilities are for YES. Archived forecasts do not prove submission.</p>
+        <div id="games" aria-live="polite"><div class="empty">Loading forecast archive&hellip;</div></div>
+      </section>
+      <aside class="bot" aria-labelledby="bot-title">
+        <div class="bot-heading"><span class="bot-icon"><img src="assets/activity.svg" alt=""></span><div><p class="eyebrow">AUTOPILOT</p><h2 id="bot-title">Bot status</h2></div></div>
+        <p id="bot-detail" class="bot-detail">Checking the macOS LaunchAgent&hellip;</p>
+        <dl class="bot-stats"><div><dt>Checks</dt><dd id="runs">&mdash;</dd></div><div><dt>Interval</dt><dd id="interval">&mdash;</dd></div><div><dt>Last exit</dt><dd id="last-exit">&mdash;</dd></div></dl>
+        <h3>Recent output</h3><ul class="log" id="activity"><li>No output yet.</li></ul>
+        <details class="errors" id="error-box" hidden><summary>Recent errors</summary><ul class="log" id="errors"></ul></details>
+        <p class="footnote" id="updated"></p>
+      </aside>
+      <section class="bot schedule" aria-labelledby="schedule-title">
+        <div class="section-head"><h2 id="schedule-title">Upcoming tipoffs</h2><button class="refresh" id="test-alert" type="button">Test alert</button></div>
+        <p class="slate-hint">Tipoff is the scheduled start of a game. Times are Eastern. Autopilot checks every 10 minutes and can submit during the 40-to-2-minute pregame window.</p>
+        <p class="footnote" id="alert-result" role="status"></p>
+        <p class="footnote" id="schedule-status" role="status">Loading contest schedule&hellip;</p>
+        <ul class="schedule-list" id="schedule-games"></ul>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
