@@ -1323,6 +1323,8 @@ name = "gigisports"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "objc2",
+ "objc2-app-kit",
  "serde",
  "serde_json",
  "tauri",
