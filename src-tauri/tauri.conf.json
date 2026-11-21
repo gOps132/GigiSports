@@ -7,7 +7,7 @@
   "app": {
     "macOSPrivateApi": true,
     "windows": [{ "label": "main", "title": "GigiSports", "width": 1180, "height": 820, "minWidth": 390, "minHeight": 570, "center": true, "backgroundColor": "#10151c" }],
-    "security": { "csp": "default-src 'self'; img-src 'self' asset:; style-src 'self'; connect-src ipc: http://ipc.localhost" }
+    "security": { "csp": "default-src 'self'; img-src 'self' asset: https://a.espncdn.com; style-src 'self'; connect-src ipc: http://ipc.localhost" }
   },
   "bundle": { "active": true, "targets": ["app"], "icon": ["icons/app.png", "icons/icon.icns"], "macOS": { "minimumSystemVersion": "11.0" } }
 }

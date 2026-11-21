@@ -1,17 +1,28 @@
+import { teamLogo } from './teams.js';
+import { drawContest, el, unknown } from './contest-view.js';
+
 const $ = (id) => document.getElementById(id);
-const el = (tag, text, cls) => {
-  const node = document.createElement(tag);
-  if (text !== undefined) node.textContent = text;
-  if (cls) node.className = cls;
-  return node;
-};
 const zone = 'America/New_York';
 const formatter = (options, lang = 'en-US') => new Intl.DateTimeFormat(lang, { timeZone: zone, ...options });
 const dateKey = formatter({ year: 'numeric', month: '2-digit', day: '2-digit' }, 'sv-SE');
 const dayLabel = formatter({ weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 const clock = formatter({ hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
 const short = formatter({ month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-let snapshot, selected, busy = false;
+let snapshot, selected, busy = false, statusBusy = false;
+let contestStatus = {contest: null, ongoing: null};
+async function refreshContest(invoke) {
+  if (statusBusy) return;
+  statusBusy = true;
+  try {
+    contestStatus = await invoke('contest_status');
+  } catch {
+    contestStatus = {contest: null, ongoing: null};
+  } finally {
+    statusBusy = false;
+  }
+  drawContest($('dashboard-metrics'), contestStatus);
+  if (snapshot) drawSlate();
+}
 const status = {
   running: ['Running now', 'The LaunchAgent is currently executing a check.', 'good'],
   scheduled: ['Scheduled', 'The LaunchAgent is loaded and waiting for its next check.', 'good'],
@@ -34,22 +45,49 @@ function drawBot(bot, at) {
   $('updated').textContent = `Checked ${clock.format(new Date(at))}.`;
 }
 
+function matchup(name) {
+  const teams = name.split(' vs ');
+  if (teams.length !== 2) return el('strong', name, 'matchup');
+  const matchup = el('strong', undefined, 'matchup');
+  teams.forEach((name, index) => {
+    if (index) matchup.append(el('span', 'vs', 'versus'));
+    const team = el('span', undefined, 'team');
+    const logo = teamLogo(name);
+    if (logo) {
+      const image = el('img', undefined, 'team-logo');
+      image.alt = '';
+      image.addEventListener('error', () => image.remove(), {once: true});
+      image.src = logo;
+      team.append(image);
+    }
+    team.append(el('span', name));
+    matchup.append(team);
+  });
+  return matchup;
+}
+
 function drawGame(name, rows, key, open) {
   const block = el('details', undefined, 'game');
   block.dataset.gameKey = key;
   block.open = open;
   const summary = el('summary');
-  const icon = el('img'); icon.src = 'assets/chevron-right.svg'; icon.alt = '';
-  summary.append(icon, el('strong', name), el('span', clock.format(new Date(rows[0].tip))));
+  const icon = el('img', undefined, 'game-chevron'); icon.src = 'assets/chevron-right.svg'; icon.alt = '';
+  const entries = contestStatus.contest?.predictions;
+  const entered = rows.filter((row) => entries?.[row.market_id] != null).length;
+  const meta = el('span', undefined, 'game-meta');
+  meta.append(el('span', clock.format(new Date(rows[0].tip))), el('span',
+    entries ? `${entered} of ${rows.length} submitted` : 'Submission status unavailable', entered ? 'entered' : undefined));
+  summary.append(icon, matchup(name), meta);
   const table = el('table');
   const head = table.createTHead().insertRow();
-  for (const label of ['Contest question', 'YES', 'Method']) {
+  for (const label of ['Contest question', 'Archived YES', 'Submitted YES', 'Method']) {
     const th = el('th', label); th.scope = 'col'; head.append(th);
   }
   const body = table.createTBody();
   for (const row of rows) {
     const tr = body.insertRow();
-    for (const val of [row.question, `${row.probability}%`, row.method]) tr.append(el('td', val));
+    const actual = entries?.[row.market_id];
+    for (const val of [row.question, `${row.probability}%`, actual == null ? unknown : `${actual}%`, row.method]) tr.append(el('td', val));
   }
   block.append(summary, table);
   return block;
@@ -123,6 +161,7 @@ async function refresh() {
   $('refresh').disabled = true;
   try {
     const invoke = globalThis.__TAURI_INTERNALS__?.invoke;
+    void refreshContest(invoke);
     if (!invoke) throw new Error('Open the GigiSports desktop app to load local data.');
     snapshot = await invoke('dashboard');
     drawBot(snapshot.bot, snapshot.checked_at);

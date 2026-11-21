@@ -27,6 +27,10 @@
       <article class="stat"><img src="assets/chart-no-axes-combined.svg" alt=""><div><span>Priced markets</span><strong id="market-count">&mdash;</strong></div></article>
       <article class="stat"><img src="assets/clock-3.svg" alt=""><div><span>Latest forecast</span><strong id="latest" class="compact">&mdash;</strong></div></article>
     </section>
+    <section class="contest-panel" aria-labelledby="contest-title">
+      <div class="section-head"><div><p class="eyebrow">LOBBY TOTALS</p><h2 id="contest-title">Contest status</h2></div></div>
+      <div id="dashboard-metrics" aria-live="polite">Loading status&hellip;</div>
+    </section>
     <div class="layout">
       <section class="slate" aria-labelledby="slate-title">
         <div class="section-head">
@@ -37,7 +41,7 @@
             <button id="next" type="button" title="Later slate" aria-label="Later slate"><img src="assets/chevron-right.svg" alt=""></button>
           </div>
         </div>
-        <p class="slate-hint">Probabilities are for YES. Archived forecasts do not prove submission.</p>
+        <p class="slate-hint">Probabilities are for YES. Submitted values come from contest entries, not the forecast archive.</p>
         <div id="games" aria-live="polite"><div class="empty">Loading forecast archive&hellip;</div></div>
       </section>
       <aside class="bot" aria-labelledby="bot-title">
